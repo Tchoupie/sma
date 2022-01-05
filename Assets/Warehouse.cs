@@ -104,7 +104,7 @@ public class Warehouse : MonoBehaviour
     {
         foreach(Agent a in agents)
         {
-            if(a.transform.position == pos)
+            if(a.nextPos == pos)
             {
                 return true;
             }
