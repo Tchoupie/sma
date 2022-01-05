@@ -5,7 +5,8 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - agentPrefab: {fileID: 8335171960729759492, guid: 8365178d58914504b9cfee672484096a, type: 3}
-  - agents: {instanceID: 0}
+  - packagePrefab: {fileID: 3511062123175991241, guid: 7e81295b81180334f954df963f063d7e, type: 3}
+  - sliderSpeed: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
