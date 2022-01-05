@@ -9,10 +9,12 @@ public class Agent : MonoBehaviour
     float widthWarehouse = 10;
     float heightWarehouse = 10;
     public Vector3 nextPos;
+    public List<Vector3> possiblePos;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        possiblePos = new List<Vector3>();
     }
 
     // Update is called once per frame
@@ -44,61 +46,25 @@ public class Agent : MonoBehaviour
 
     public void computeMove()
     {
-        int x = 0;
-        int y = 0;
-
-        if(Random.value<0.5f)
+        switch (Random.Range(0, possiblePos.Count))
         {
-            if(Random.value<0.5f)
-            {
-                x = -1;
-            }
-            else
-            {
-                x = 1;
-            }
+            case 0:
+                if (possiblePos.Count == 0){ nextPos = transform.position; }
+                else { nextPos = possiblePos[0]; }
+                break;
+            case 1:
+                nextPos = possiblePos[1];
+                break;
+            case 2:
+                nextPos = possiblePos[2];
+                break;
+            case 3:
+                nextPos = possiblePos[3];
+                break;
+            default:
+                nextPos = possiblePos[0];
+                break;
         }
-        else
-        {
-            if(Random.value<0.5f)
-            {
-                y = -1;
-            }
-            else
-            {
-                y = 1;
-            } 
-        }
-
-        if(x==0) //On se deplace en y
-        {
-            //print(heightWarehouse/2);
-            if(transform.position.y + y > heightWarehouse/2)
-            {
-                y = -1;
-            }
-
-            if(transform.position.y - y < -heightWarehouse/2)
-            {
-                y = 1;
-            }
-
-        }
-        else //On se deplace en x
-        {   
-            //On verifie les bords
-            if(transform.position.x + x > widthWarehouse/2)
-            {
-                x = -1;
-            }
-
-            if(transform.position.x - x < -widthWarehouse/2)
-            {
-                x = 1;
-            }
-        }
-        nextPos = transform.position + new Vector3(x,y,0);
-        //transform.position += new Vector3(x,y,0);
     }
 
     public void move()

@@ -22,6 +22,12 @@ public class Warehouse : MonoBehaviour
     public Slider sliderSpeed;
     float prevdt = 0f;
     // Start is called before the first frame update
+
+    private static Vector3Int north = new Vector3Int(0, 1, 0);
+    private static Vector3Int south = new Vector3Int(0, -1, 0);
+    private static Vector3Int west = new Vector3Int(-1, 0, 0);
+    private static Vector3Int east = new Vector3Int(1, 0, 0);
+
     void Start()
     {
         agents = new List<Agent>();
@@ -73,14 +79,23 @@ public class Warehouse : MonoBehaviour
 
     void resolvePos()
     {
-        foreach(Agent a in agents)
+        foreach(Agent a1 in agents)
         {
-            foreach(Agent a1 in agents)
+            a1.possiblePos.Clear();
+            if (!someoneIsThere(a1.transform.position + north)){
+                a1.possiblePos.Add(a1.transform.position + north);
+            }
+            if (!someoneIsThere(a1.transform.position + south))
             {
-                if(a.nextPos == a1.nextPos)
-                {
-                    a1.computeMove();
-                }
+                a1.possiblePos.Add(a1.transform.position + south);
+            }
+            if (!someoneIsThere(a1.transform.position + west))
+            {
+                a1.possiblePos.Add(a1.transform.position + west);
+            }
+            if (!someoneIsThere(a1.transform.position + east))
+            {
+                a1.possiblePos.Add(a1.transform.position + east);
             }
         }
     }
@@ -89,7 +104,7 @@ public class Warehouse : MonoBehaviour
     {
         foreach(Agent a in agents)
         {
-            if(a.nextPos == pos)
+            if(a.transform.position == pos)
             {
                 return true;
             }
