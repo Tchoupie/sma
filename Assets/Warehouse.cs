@@ -77,8 +77,45 @@ public class Warehouse : MonoBehaviour
         {
             foreach(Agent a1 in agents)
             {
-                a1.computeMove();
+                if(a.nextPos == a1.nextPos)
+                {
+                    a1.computeMove();
+                }
             }
         }
+    }
+
+    bool someoneIsThere(Vector3 pos)
+    {
+        foreach(Agent a in agents)
+        {
+            if(a.nextPos == pos)
+            {
+                return true;
+            }
+        }
+
+        foreach(Package p in packages)
+        {
+            if(p.transform.position == pos)
+            {
+                return true;
+            }
+        }
+
+        foreach(Destination d in destinations)
+        {
+            if(d.transform.position == pos)
+            {
+                return true;
+            }
+        }
+
+        if(pos.y < -height/2 || pos.y > height/2 || pos.x > width/2 || pos.x < -width/2)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
