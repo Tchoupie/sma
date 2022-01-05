@@ -10,6 +10,8 @@ public class Warehouse : MonoBehaviour
     public List<Agent> agents;
     public int width = 10;
     public int height = 10;
+    
+    public float time = 0;
     public float dt = 0.002f;
     public Slider sliderSpeed;
     float prevdt = 0f;
@@ -30,13 +32,33 @@ public class Warehouse : MonoBehaviour
     void Update()
     {
         dt = sliderSpeed.value;
-        if(dt != prevdt) //Pour la modification du deltatime (vitesse de simulation)
+
+        time += dt;
+
+        if(time >= 1.0f)
         {
-            foreach(Agent a in agents)
+            time = 0f;
+        }
+        
+        foreach(Agent a in agents)
+        {
+            if(time == 0)
             {
-                a.setDeltaTime(dt);
+                a.computeMove(); //On calcule les positions des agens pour t+1 (qui seront dans nextPos)
+                resolvePos();
+                a.move();
             }
         }
-        prevdt = dt;
+    }
+
+    void resolvePos()
+    {
+        foreach(Agent a in agents)
+        {
+            foreach(Agent a1 in agents)
+            {
+                a1.computeMove();
+            }
+        }
     }
 }

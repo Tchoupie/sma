@@ -155,8 +155,9 @@ MonoBehaviour:
   agentPrefab: {fileID: 8335171960729759492, guid: 8365178d58914504b9cfee672484096a, type: 3}
   nbAgents: 4
   agents: []
-  width: 10
-  height: 10
+  width: 15
+  height: 15
+  time: 0
   dt: 0.002
   sliderSpeed: {fileID: 1745894183}
 --- !u!4 &300088761

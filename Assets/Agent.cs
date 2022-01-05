@@ -8,6 +8,7 @@ public class Agent : MonoBehaviour
     float dt = 0.002f;
     float widthWarehouse = 10;
     float heightWarehouse = 10;
+    public Vector3 nextPos;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,11 +18,16 @@ public class Agent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        move();
         time += dt;
+
         if(time >= 1.0f)
         {
             time = 0f;
+        }
+
+        if(time == 0)
+        {
+            computeMove();
         }
     }
 
@@ -36,65 +42,67 @@ public class Agent : MonoBehaviour
         this.heightWarehouse = h;
     }
 
-    void move()
+    public void computeMove()
     {
-        if(time == 0)
-        {   
+        int x = 0;
+        int y = 0;
 
-            int x = 0;
-            int y = 0;
-
+        if(Random.value<0.5f)
+        {
             if(Random.value<0.5f)
             {
-                if(Random.value<0.5f)
-                {
-                    x = -1;
-                }
-                else
-                {
-                    x = 1;
-                }
+                x = -1;
             }
             else
             {
-                if(Random.value<0.5f)
-                {
-                    y = -1;
-                }
-                else
-                {
-                    y = 1;
-                } 
+                x = 1;
             }
-
-            if(x==0) //On se deplace en y
-            {
-                //print(heightWarehouse/2);
-                if(transform.position.y + y > heightWarehouse/2)
-                {
-                    y = -1;
-                }
-
-                if(transform.position.y - y < -heightWarehouse/2)
-                {
-                    y = 1;
-                }
-
-            }
-            else //On se deplace en x
-            {   
-                //On verifie les bords
-                if(transform.position.x + x > widthWarehouse/2)
-                {
-                    x = -1;
-                }
-
-                if(transform.position.x - x < -widthWarehouse/2)
-                {
-                    x = 1;
-                }
-            }
-            transform.position += new Vector3(x,y,0);
         }
+        else
+        {
+            if(Random.value<0.5f)
+            {
+                y = -1;
+            }
+            else
+            {
+                y = 1;
+            } 
+        }
+
+        if(x==0) //On se deplace en y
+        {
+            //print(heightWarehouse/2);
+            if(transform.position.y + y > heightWarehouse/2)
+            {
+                y = -1;
+            }
+
+            if(transform.position.y - y < -heightWarehouse/2)
+            {
+                y = 1;
+            }
+
+        }
+        else //On se deplace en x
+        {   
+            //On verifie les bords
+            if(transform.position.x + x > widthWarehouse/2)
+            {
+                x = -1;
+            }
+
+            if(transform.position.x - x < -widthWarehouse/2)
+            {
+                x = 1;
+            }
+        }
+        nextPos = transform.position + new Vector3(x,y,0);
+        //transform.position += new Vector3(x,y,0);
+    }
+
+    public void move()
+    {
+        transform.position = nextPos;
     }
 }
