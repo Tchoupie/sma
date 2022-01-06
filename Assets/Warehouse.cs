@@ -12,6 +12,8 @@ public class Warehouse : MonoBehaviour
     public int nbAgents;
     public int nbPackages;
     public int nbDestinations;
+
+    public int moveType;
     public List<Agent> agents;
     public List<Package> packages;
     public List<Destination> destinations;
@@ -40,6 +42,7 @@ public class Warehouse : MonoBehaviour
         nbAgents = VariablesGlobales.nbAgentsGlob;
         nbPackages = VariablesGlobales.nbPaquetsGlob;
         nbDestinations = 1;
+        moveType = VariablesGlobales.mouvementGlob;
         for(int i=0; i<nbAgents;i++)
         {
             Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
@@ -89,7 +92,20 @@ public class Warehouse : MonoBehaviour
             turn+=1;
             turnText.GetComponent<UnityEngine.UI.Text>().text = "Turn "+turn.ToString();
         }
+        switch(moveType)
+        {
+            case 1 : 
+                randomMove();
+                break;
 
+            default:
+                print ("Incorrect move");
+                break;
+        }
+    }
+
+    void randomMove()
+    {
         foreach(Agent a in agents)
         {
             if(time == 0)
@@ -130,7 +146,6 @@ public class Warehouse : MonoBehaviour
             }
         }
     }
-
     bool resolveDestination(Agent a)
     {
         if (someoneIsThere(a.transform.position + north)==3 || someoneIsThere(a.transform.position + south)==3 
