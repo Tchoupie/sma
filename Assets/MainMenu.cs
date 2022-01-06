@@ -10,6 +10,10 @@ public class MainMenu : MonoBehaviour
       SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex +1);
     }
 
+    public void Quitter(){
+      Application.Quit();
+    }
+
     public void SetPackets(int nb){
       VariablesGlobales.nbPaquetsGlob = nb +1;
     }
