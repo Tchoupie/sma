@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Package : MonoBehaviour
 {
-    public bool affected;
-    // Start is called before the first frame update
+    public bool affected; //indique si un paquet a un agent assigné à son transport
+
     void Start()
     {
         affected = false;

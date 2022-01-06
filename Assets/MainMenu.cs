@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
 
-    public void Lancement(){
+    public void Lancement(){// change de scene pour lancer l'experience
       SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex +1);
     }
 
