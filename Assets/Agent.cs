@@ -10,6 +10,7 @@ public class Agent : MonoBehaviour
     float heightWarehouse = 10;
     public Vector3 nextPos;
     public List<Vector3> possiblePos;
+    public Package packageInHands;
 
     // Start is called before the first frame update
     void Start()

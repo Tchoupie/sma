@@ -84,31 +84,31 @@ public class Warehouse : MonoBehaviour
         foreach(Agent a1 in agents)
         {
             a1.possiblePos.Clear();
-            if (!someoneIsThere(a1.transform.position + north)){
+            if (someoneIsThere(a1.transform.position + north)==0){
                 a1.possiblePos.Add(a1.transform.position + north);
             }
-            if (!someoneIsThere(a1.transform.position + south))
+            if (someoneIsThere(a1.transform.position + south)==0)
             {
                 a1.possiblePos.Add(a1.transform.position + south);
             }
-            if (!someoneIsThere(a1.transform.position + west))
+            if (someoneIsThere(a1.transform.position + west)==0)
             {
                 a1.possiblePos.Add(a1.transform.position + west);
             }
-            if (!someoneIsThere(a1.transform.position + east))
+            if (someoneIsThere(a1.transform.position + east)==0)
             {
                 a1.possiblePos.Add(a1.transform.position + east);
             }
         }
     }
 
-    bool someoneIsThere(Vector3 pos)
+    int someoneIsThere(Vector3 pos)
     {
         foreach(Agent a in agents)
         {
             if(a.nextPos == pos)
             {
-                return true;
+                return 1;
             }
         }
 
@@ -116,7 +116,7 @@ public class Warehouse : MonoBehaviour
         {
             if(p.transform.position == pos)
             {
-                return true;
+                return 2;
             }
         }
 
@@ -124,15 +124,15 @@ public class Warehouse : MonoBehaviour
         {
             if(d.transform.position == pos)
             {
-                return true;
+                return 3;
             }
         }
 
         if(pos.y < -height/2 || pos.y > height/2 || pos.x > width/2 || pos.x < -width/2)
         {
-            return true;
+            return 100;
         }
 
-        return false;
+        return 0;
     }
 }
