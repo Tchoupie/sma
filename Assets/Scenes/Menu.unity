@@ -1391,6 +1391,26 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: 10
       m_Image: {fileID: 0}
+    - m_Text: 11
+      m_Image: {fileID: 0}
+    - m_Text: 12
+      m_Image: {fileID: 0}
+    - m_Text: 13
+      m_Image: {fileID: 0}
+    - m_Text: 14
+      m_Image: {fileID: 0}
+    - m_Text: 15
+      m_Image: {fileID: 0}
+    - m_Text: 16
+      m_Image: {fileID: 0}
+    - m_Text: 17
+      m_Image: {fileID: 0}
+    - m_Text: 18
+      m_Image: {fileID: 0}
+    - m_Text: 19
+      m_Image: {fileID: 0}
+    - m_Text: 20
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -1423,7 +1443,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 510877123}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 18.560642}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 247185181}
@@ -1435,7 +1455,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 303.95386, y: 17.879852}
+  m_AnchoredPosition: {x: 300, y: 18}
   m_SizeDelta: {x: 181.7991, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &522498213
@@ -2838,7 +2858,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "D\xE9placement al\xE9atoire"
+  m_Text: "Package al\xE9atoire"
 --- !u!222 &1123107209
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3578,7 +3598,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1574685017}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 18.560642}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1123107207}
@@ -3590,8 +3610,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4.953888, y: 17.879852}
-  m_SizeDelta: {x: 181.7991, y: 30}
+  m_AnchoredPosition: {x: 0, y: 18}
+  m_SizeDelta: {x: 202.0648, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1574685019
 MonoBehaviour:
@@ -3639,14 +3659,16 @@ MonoBehaviour:
   m_CaptionImage: {fileID: 0}
   m_ItemText: {fileID: 522498215}
   m_ItemImage: {fileID: 0}
-  m_Value: 0
+  m_Value: 1
   m_Options:
     m_Options:
     - m_Text: "D\xE9placement al\xE9atoire"
       m_Image: {fileID: -6345582653474501477, guid: 9053531606d87dd40b95f55c078b6a31, type: 3}
-    - m_Text: Package le plus proche
+    - m_Text: "Package al\xE9atoire"
       m_Image: {fileID: 21300000, guid: b21bdb528bff43a498a81e8ec260561b, type: 3}
     - m_Text: "Package le plus \xE9loign\xE9"
+      m_Image: {fileID: 21300000, guid: b21bdb528bff43a498a81e8ec260561b, type: 3}
+    - m_Text: Package le plus proche
       m_Image: {fileID: 21300000, guid: b21bdb528bff43a498a81e8ec260561b, type: 3}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3729,7 +3751,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1764065885}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 18.560642}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 372495681}
@@ -3741,7 +3763,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -295.0461, y: 17.879852}
+  m_AnchoredPosition: {x: -300, y: 18}
   m_SizeDelta: {x: 181.7991, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1764065887
@@ -3812,6 +3834,26 @@ MonoBehaviour:
     - m_Text: 9
       m_Image: {fileID: 0}
     - m_Text: 10
+      m_Image: {fileID: 0}
+    - m_Text: 11
+      m_Image: {fileID: 0}
+    - m_Text: 12
+      m_Image: {fileID: 0}
+    - m_Text: 13
+      m_Image: {fileID: 0}
+    - m_Text: 14
+      m_Image: {fileID: 0}
+    - m_Text: 15
+      m_Image: {fileID: 0}
+    - m_Text: 16
+      m_Image: {fileID: 0}
+    - m_Text: 17
+      m_Image: {fileID: 0}
+    - m_Text: 18
+      m_Image: {fileID: 0}
+    - m_Text: 19
+      m_Image: {fileID: 0}
+    - m_Text: 20
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
