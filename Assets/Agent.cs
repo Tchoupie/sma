@@ -16,6 +16,7 @@ public class Agent : MonoBehaviour
     void Start()
     {
         possiblePos = new List<Vector3>();
+        packageInHands = null;
     }
 
     // Update is called once per frame

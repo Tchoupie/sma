@@ -72,34 +72,86 @@ public class Warehouse : MonoBehaviour
         {
             if(time == 0)
             {
-                a.computeMove(); //On calcule les positions des agens pour t+1 (qui seront dans nextPos)
-                resolvePos();
-                a.move();
+                bool hasPickedUp = false;
+                if (a.packageInHands == null)
+                {
+                    hasPickedUp = resolvePickup(a);
+                }
+                if(!hasPickedUp)
+                {
+                    resolvePos(a);
+                    a.computeMove();
+                    a.move();
+                }
+                else
+                {
+                    print("pick");
+                }
+                
             }
         }
     }
 
-    void resolvePos()
+    void resolvePos(Agent a)
     {
-        foreach(Agent a1 in agents)
+        a.possiblePos.Clear();
+        if (someoneIsThere(a.transform.position + north)==0){
+            a.possiblePos.Add(a.transform.position + north);
+        }
+        if (someoneIsThere(a.transform.position + south)==0)
         {
-            a1.possiblePos.Clear();
-            if (someoneIsThere(a1.transform.position + north)==0){
-                a1.possiblePos.Add(a1.transform.position + north);
-            }
-            if (someoneIsThere(a1.transform.position + south)==0)
+            a.possiblePos.Add(a.transform.position + south);
+        }
+        if (someoneIsThere(a.transform.position + west)==0)
+        {
+            a.possiblePos.Add(a.transform.position + west);
+        }
+        if (someoneIsThere(a.transform.position + east)==0)
+        {
+            a.possiblePos.Add(a.transform.position + east);
+        }
+    }
+
+    bool resolvePickup(Agent a)
+    {
+        a.possiblePos.Clear();
+        int indexP = -1;
+        if (someoneIsThere(a.transform.position + north) == 2)
+        {
+            indexP = findPackage(a.transform.position + north);
+        }
+        else if (someoneIsThere(a.transform.position + south) == 2)
+        {
+            indexP = findPackage(a.transform.position + south);
+        }
+        else if (someoneIsThere(a.transform.position + west) == 2)
+        {
+            indexP = findPackage(a.transform.position + west);
+        }
+        else if (someoneIsThere(a.transform.position + east) == 2)
+        {
+            indexP = findPackage(a.transform.position + east);
+        }
+        if (indexP != -1)
+        {
+            a.packageInHands = packages[indexP];
+            packages[indexP].gameObject.SetActive(false);
+            packages.RemoveAt(indexP);
+            return true;
+        }
+        else { return false; }
+    }
+
+    int findPackage(Vector3 pos)
+    {
+        for(int i = 0; i < packages.Count; i++)
+        {
+            if (packages[i].transform.position == pos)
             {
-                a1.possiblePos.Add(a1.transform.position + south);
-            }
-            if (someoneIsThere(a1.transform.position + west)==0)
-            {
-                a1.possiblePos.Add(a1.transform.position + west);
-            }
-            if (someoneIsThere(a1.transform.position + east)==0)
-            {
-                a1.possiblePos.Add(a1.transform.position + east);
+                return i;
             }
         }
+        return -1;
     }
 
     int someoneIsThere(Vector3 pos)
