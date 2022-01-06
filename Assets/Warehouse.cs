@@ -23,6 +23,7 @@ public class Warehouse : MonoBehaviour
     public GameObject turnText;
     int turn = 0;
     float prevdt = 0f;
+    int packageInDestination = 0;
     // Start is called before the first frame update
 
     private static Vector3Int north = new Vector3Int(0, 1, 0);
@@ -40,20 +41,35 @@ public class Warehouse : MonoBehaviour
         nbDestinations = 1;
         for(int i=0; i<nbAgents;i++)
         {
-            GameObject a = Instantiate(agentPrefab,new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0),Quaternion.identity);
+            Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
+            while(someoneIsThere(posSpawn) != 0)
+            {
+                posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
+            }
+            GameObject a = Instantiate(agentPrefab,posSpawn,Quaternion.identity);
             a.GetComponent<Agent>().setWitdhHeightWareHouse(width,height); //On donne l'info sur la longueur et la hauteur de la warehouse
             agents.Add(a.GetComponent<Agent>());
         }
 
         for(int i=0; i < nbPackages; i++)
         {
-            GameObject p = Instantiate(packagePrefab, new Vector3(Random.Range((int)-width / 2, (int)(width / 2) + 1), Random.Range((int)-height / 2, (int)(height / 2) + 1), 0), Quaternion.identity);
+            Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
+            while(someoneIsThere(posSpawn) != 0)
+            {
+                posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
+            }
+            GameObject p = Instantiate(packagePrefab, posSpawn, Quaternion.identity);
             packages.Add(p.GetComponent<Package>());
         }
 
         for (int i = 0; i < nbDestinations; i++)
         {
-            GameObject p = Instantiate(destinationPrefab, new Vector3(Random.Range((int)-width / 2, (int)(width / 2) + 1), Random.Range((int)-height / 2, (int)(height / 2) + 1), 0), Quaternion.identity);
+            Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
+            while(someoneIsThere(posSpawn) != 0)
+            {
+                posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
+            }
+            GameObject p = Instantiate(destinationPrefab, posSpawn, Quaternion.identity);
             destinations.Add(p.GetComponent<Destination>());
         }
         prevdt = dt;
@@ -78,25 +94,51 @@ public class Warehouse : MonoBehaviour
             if(time == 0)
             {
                 bool hasPickedUp = false;
-                if (a.packageInHands == null)
+                bool deposePackage = false;
+                if (a.packageInHands == null) //Si l'agent n'a rien dans les mains
                 {
                     hasPickedUp = resolvePickup(a);
                 }
-                if(!hasPickedUp)
+                else // Si il a quelque chose dans les mains
+                {
+                    deposePackage = resolveDestination(a);
+                }
+
+                if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
                 {
                     resolvePos(a);
                     a.computeMove();
                     a.move();
                 }
-                else
+                else //Si il est entrain de déposer ou pick up
                 {
-                    print("pick");
+                    if(deposePackage) //Si il est entrain de déposer (il a la destination à côté de lui)
+                    {
+                        a.changeForNormalSprite();
+                        a.packageInHands = null;
+                        packageInDestination++;
+                        print("depose");
+                    }
+
+                    if(hasPickedUp)
+                    {
+                        print("pick");
+                    }
                 }
                 
             }
         }
     }
 
+    bool resolveDestination(Agent a)
+    {
+        if (someoneIsThere(a.transform.position + north)==3 || someoneIsThere(a.transform.position + south)==3 
+        || someoneIsThere(a.transform.position + west)==3 || someoneIsThere(a.transform.position + east)==3)
+        {
+            return true;
+        }
+        return false;
+    }
     void resolvePos(Agent a)
     {
         a.possiblePos.Clear();
