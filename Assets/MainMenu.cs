@@ -11,12 +11,12 @@ public class MainMenu : MonoBehaviour
     }
 
     public void SetPackets(int nb){
-      VariablesGlobales.nbPaquetsGlob = nb;
+      VariablesGlobales.nbPaquetsGlob = nb +1;
     }
     public void SetMovement(int nb){
-      VariablesGlobales.mouvementGlob = nb;
+      VariablesGlobales.mouvementGlob = nb +1;
     }
     public void SetAgents(int nb){
-      VariablesGlobales.nbAgentsGlob = nb;
+      VariablesGlobales.nbAgentsGlob = nb +1;
     }
 }
