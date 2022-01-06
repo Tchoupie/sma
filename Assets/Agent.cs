@@ -10,11 +10,16 @@ public class Agent : MonoBehaviour
     float heightWarehouse = 10;
     public Vector3 nextPos;
     public List<Vector3> possiblePos;
+    public Sprite carrySprite;
+    Sprite normalSprite;
+    SpriteRenderer spriteRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
         possiblePos = new List<Vector3>();
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        normalSprite = spriteRenderer.sprite;
     }
 
     // Update is called once per frame
@@ -70,5 +75,15 @@ public class Agent : MonoBehaviour
     public void move()
     {
         transform.position = nextPos;
+    }
+
+    void ChangeForCarrySprite()
+    {
+        spriteRenderer.sprite = carrySprite; 
+    }
+
+    void ChangeForNormalSprite()
+    {
+        spriteRenderer.sprite = normalSprite;
     }
 }

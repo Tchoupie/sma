@@ -96,3 +96,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextPos: {x: 0, y: 0, z: 0}
+  possiblePos: []
+  carrySprite: {fileID: 21300000, guid: ea0b041c541ddce44855bb750e66f14d, type: 3}

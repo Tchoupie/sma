@@ -20,6 +20,8 @@ public class Warehouse : MonoBehaviour
     public float time = 0;
     public float dt = 0.002f;
     public Slider sliderSpeed;
+    public GameObject turnText;
+    int turn = 0;
     float prevdt = 0f;
     // Start is called before the first frame update
 
@@ -35,6 +37,7 @@ public class Warehouse : MonoBehaviour
         destinations = new List<Destination>();
         nbAgents = VariablesGlobales.nbAgentsGlob;
         nbPackages = VariablesGlobales.nbPaquetsGlob;
+        nbDestinations = 1;
         for(int i=0; i<nbAgents;i++)
         {
             GameObject a = Instantiate(agentPrefab,new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0),Quaternion.identity);
@@ -66,6 +69,8 @@ public class Warehouse : MonoBehaviour
         if(time >= 1.0f)
         {
             time = 0f;
+            turn+=1;
+            turnText.GetComponent<UnityEngine.UI.Text>().text = "Turn "+turn.ToString();
         }
         
         foreach(Agent a in agents)
