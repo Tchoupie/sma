@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
-    float time = 0;
-    float dt = 0.002f;
     float widthWarehouse = 10;
     float heightWarehouse = 10;
     public Vector3 nextPos;
@@ -20,6 +18,7 @@ public class Agent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        nextPos = transform.position;
         possiblePos = new List<Vector3>();
 
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
@@ -32,22 +31,6 @@ public class Agent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        time += dt;
-
-        if(time >= 1.0f)
-        {
-            time = 0f;
-        }
-
-        if(time == 0)
-        {
-            computeMove();
-        }
-    }
-
-    public void setDeltaTime(float dt)
-    {
-        this.dt = dt;
     }
 
     public void setWitdhHeightWareHouse(int w, int h)

@@ -21,7 +21,7 @@ public class Warehouse : MonoBehaviour
     public int height = 10;
 
     public float time = 0;
-    public float dt = 0.002f;
+    public float dt = 0f;
     public Slider sliderSpeed;
     public GameObject turnText;
     int turn = 0;
@@ -77,6 +77,7 @@ public class Warehouse : MonoBehaviour
             destinations.Add(p.GetComponent<Destination>());
         }
         prevdt = dt;
+        print(dt);
     }
 
     // Update is called once per frame
@@ -91,16 +92,17 @@ public class Warehouse : MonoBehaviour
             time = 0f;
             turn+=1;
             turnText.GetComponent<UnityEngine.UI.Text>().text = "Turn "+turn.ToString();
-        }
-        switch(moveType)
-        {
-            case 1 : 
-                randomMove();
-                break;
 
-            default:
-                print ("Incorrect move");
-                break;
+            switch(moveType)
+            {
+                case 1 : 
+                    randomMove();
+                    break;
+
+                default:
+                    print ("Incorrect move");
+                    break;
+            }
         }
     }
 
@@ -108,41 +110,37 @@ public class Warehouse : MonoBehaviour
     {
         foreach(Agent a in agents)
         {
-            if(time == 0)
+            bool hasPickedUp = false;
+            bool deposePackage = false;
+            if (a.packageInHands == null) //Si l'agent n'a rien dans les mains
             {
-                bool hasPickedUp = false;
-                bool deposePackage = false;
-                if (a.packageInHands == null) //Si l'agent n'a rien dans les mains
+                hasPickedUp = resolvePickup(a);
+            }
+            else // Si il a quelque chose dans les mains
+            {
+                deposePackage = resolveDestination(a);
+            }
+
+            if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
+            {
+                resolvePos(a);
+                a.computeMove();
+                a.move();
+            }
+            else //Si il est entrain de déposer ou pick up
+            {
+                if(deposePackage) //Si il est entrain de déposer (il a la destination à côté de lui)
                 {
-                    hasPickedUp = resolvePickup(a);
-                }
-                else // Si il a quelque chose dans les mains
-                {
-                    deposePackage = resolveDestination(a);
+                    a.changeForNormalSprite();
+                    a.packageInHands = null;
+                    packageInDestination++;
+                    print("depose");
                 }
 
-                if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
+                if(hasPickedUp)
                 {
-                    resolvePos(a);
-                    a.computeMove();
-                    a.move();
+                    print("pick");
                 }
-                else //Si il est entrain de déposer ou pick up
-                {
-                    if(deposePackage) //Si il est entrain de déposer (il a la destination à côté de lui)
-                    {
-                        a.changeForNormalSprite();
-                        a.packageInHands = null;
-                        packageInDestination++;
-                        print("depose");
-                    }
-
-                    if(hasPickedUp)
-                    {
-                        print("pick");
-                    }
-                }
-
             }
         }
     }

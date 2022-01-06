@@ -158,13 +158,14 @@ MonoBehaviour:
   nbAgents: 4
   nbPackages: 1
   nbDestinations: 1
+  moveType: 0
   agents: []
   packages: []
   destinations: []
   width: 15
   height: 15
   time: 0
-  dt: 0.002
+  dt: 0
   sliderSpeed: {fileID: 1745894183}
   turnText: {fileID: 449897168}
 --- !u!4 &300088761
@@ -1103,10 +1104,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 766821819}
   m_HandleRect: {fileID: 568037121}
   m_Direction: 0
-  m_MinValue: 0.002
+  m_MinValue: 0
   m_MaxValue: 0.09
   m_WholeNumbers: 0
-  m_Value: 0.002
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
