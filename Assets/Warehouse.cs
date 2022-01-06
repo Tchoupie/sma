@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Warehouse : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class Warehouse : MonoBehaviour
     public List<Destination> destinations;
     public int width = 10;
     public int height = 10;
-    
+
     public float time = 0;
     public float dt = 0.002f;
     public Slider sliderSpeed;
@@ -88,7 +89,7 @@ public class Warehouse : MonoBehaviour
             turn+=1;
             turnText.GetComponent<UnityEngine.UI.Text>().text = "Turn "+turn.ToString();
         }
-        
+
         foreach(Agent a in agents)
         {
             if(time == 0)
@@ -125,7 +126,7 @@ public class Warehouse : MonoBehaviour
                         print("pick");
                     }
                 }
-                
+
             }
         }
     }
@@ -234,5 +235,8 @@ public class Warehouse : MonoBehaviour
         }
 
         return 0;
+    }
+    public void ReturnToMainMenu(){
+      SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 }
