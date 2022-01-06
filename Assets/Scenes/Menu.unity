@@ -2928,7 +2928,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.9058824, g: 0.23529413, b: 0.23529413, a: 1}
-    m_HighlightedColor: {r: 0.90588236, g: 0.39455917, b: 0.23529409, a: 1}
+    m_HighlightedColor: {r: 0.6981132, g: 0.20087217, b: 0.20087217, a: 1}
     m_PressedColor: {r: 0.6603774, g: 0.18378428, b: 0.18378428, a: 1}
     m_SelectedColor: {r: 0.9058824, g: 0.23529413, b: 0.23529413, a: 1}
     m_DisabledColor: {r: 0.9058824, g: 0.23529413, b: 0.23529413, a: 0.5019608}
@@ -2952,7 +2952,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1485003047}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: Lancement
+        m_MethodName: Quitter
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
