@@ -30,7 +30,7 @@ public class Warehouse : MonoBehaviour
     public GameObject panelEnd;
     int turn = 0;
     float prevdt = 0f;
-    int packageInDestination = 0;
+    public int packageInDestination = 0;
     // Start is called before the first frame update
 
     public static Vector3Int north = new Vector3Int(0, 1, 0);
@@ -90,7 +90,7 @@ public class Warehouse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      if (nbDestinations != nbPackages) {
+      if (packageInDestination != nbPackages) {
         dt = sliderSpeed.value;
 
         time += dt;
@@ -107,7 +107,7 @@ public class Warehouse : MonoBehaviour
                     randomMove();
                     break;
                 case 2 :
-                    moveClosestAffectationRandom();
+                    moveAffectationRandom();
                     break;
                 default:
                     print ("Incorrect move");
@@ -116,12 +116,13 @@ public class Warehouse : MonoBehaviour
         }
       }
       else{
+        print("fin experience");
         panelExperience.SetActive(false);
         panelEnd.SetActive(true);
         TextEnd.GetComponent<UnityEngine.UI.Text>().text = "Mission accomplie en "+ turn.ToString() + " tours";
       }
     }
-    void moveClosestAffectationRandom()
+    void moveAffectationRandom()
     {
       foreach(Agent a in agents)
       {
@@ -129,7 +130,7 @@ public class Warehouse : MonoBehaviour
           {
               bool hasPickedUp = false;
               bool deposePackage = false;
-              bool swap = false;
+              Agent swap = null;
               if (a.positionTarget == a.transform.position){
                 print("affectation");
                 affectPackage(a);
@@ -146,12 +147,29 @@ public class Warehouse : MonoBehaviour
                   }
               }
 
-              if(!hasPickedUp && !deposePackage && !swap) //Si il n'est pas entrain de pick up ou de déposé
+              if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
               {
                   if (a.positionTarget != a.transform.position) {
                     resolvePos(a);
                     a.computeMoveToTarget();
-                    a.move();
+                    if (swap != null) {
+                      if (Vector3.Distance(destinations[0].transform.position,a.nextPos)>Vector3.Distance(destinations[0].transform.position,swap.transform.position)) {
+                        a.changeForNormalSprite();
+                        swap.changeForCarrySprite();
+                        swap.packageInHands = a.packageInHands;
+                        a.packageInHands = null;
+                        swap.positionTarget = destinations[0].transform.position;
+                        a.nextPos = a.transform.position;
+                        affectPackage(a);
+                        print("echange");
+                      }
+                      else{
+                        a.move();
+                      }
+                    }
+                    else{
+                      a.move();
+                    }
                   }
               }
               else //Si il est entrain de déposer ou pick up
@@ -306,7 +324,7 @@ public class Warehouse : MonoBehaviour
         }
         else { return false; }
     }
-    bool resolveSwap(Agent a)
+    Agent resolveSwap(Agent a)
     {
         a.possiblePos.Clear();
         Agent agentcible = null;
@@ -350,18 +368,7 @@ public class Warehouse : MonoBehaviour
             }
           }
         }
-        if (agentcible != null)
-        {
-          a.changeForNormalSprite();
-          agentcible.changeForCarrySprite();
-          agentcible.packageInHands = a.packageInHands;
-          a.packageInHands = null;
-          agentcible.positionTarget = destinations[0].transform.position;
-          affectPackage(a);
-          print("echange");
-          return true;
-        }
-        else { return false; }
+        return agentcible;
     }
 
     int findPackage(Vector3 pos)
