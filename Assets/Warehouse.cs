@@ -29,7 +29,6 @@ public class Warehouse : MonoBehaviour
     public GameObject panelExperience;
     public GameObject panelEnd;
     int turn = 0;
-    float prevdt = 0f;
     public int packageInDestination = 0;
     // Start is called before the first frame update
 
@@ -47,10 +46,10 @@ public class Warehouse : MonoBehaviour
         nbPackages = VariablesGlobales.nbPaquetsGlob;
         nbDestinations = 1;
         moveType = VariablesGlobales.mouvementGlob;
-        for(int i=0; i<nbAgents;i++)
+
+        for(int i=0; i<nbAgents;i++) //Initialisation des agents
         {
             Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
-            print(someoneIsThere(posSpawn));
             while(someoneIsThere(posSpawn) != 0)
             {
                 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
@@ -60,10 +59,9 @@ public class Warehouse : MonoBehaviour
             agents.Add(a.GetComponent<Agent>());
         }
 
-        for(int i=0; i < nbPackages; i++)
+        for(int i=0; i < nbPackages; i++) //Initialisation des packages
         {
             Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
-            print(someoneIsThere(posSpawn));
             while(someoneIsThere(posSpawn) != 0)
             {
                 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
@@ -72,10 +70,9 @@ public class Warehouse : MonoBehaviour
             packages.Add(p.GetComponent<Package>());
         }
 
-        for (int i = 0; i < nbDestinations; i++)
+        for (int i = 0; i < nbDestinations; i++) //Initialisation des destinations
         {
             Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
-            print(someoneIsThere(posSpawn));
             while(someoneIsThere(posSpawn) != 0)
             {
                 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
@@ -83,24 +80,23 @@ public class Warehouse : MonoBehaviour
             GameObject p = Instantiate(destinationPrefab, posSpawn, Quaternion.identity);
             destinations.Add(p.GetComponent<Destination>());
         }
-        prevdt = dt;
-        print(dt);
     }
 
     // Update is called once per frame
     void Update()
     {
-      if (packageInDestination != nbPackages) {
-        dt = sliderSpeed.value;
+      if (packageInDestination != nbPackages) { //Condition de fin de l'expérience
+        dt = sliderSpeed.value; //On prend comme dt la valeur du slider
 
-        time += dt;
+        time += dt; //On rajoute au temps le dt
 
-        if(time >= 1.0f)
+        if(time >= 1.0f) //Lorsque le temps à 1 (ou au dessus) on passe 1 tour et on execute tout les mouvements et tâches
         {
             time = 0f;
             turn+=1;
-            turnText.GetComponent<UnityEngine.UI.Text>().text = "Turn "+turn.ToString();
+            turnText.GetComponent<UnityEngine.UI.Text>().text = "Turn "+turn.ToString(); //Pour savoir le nombre de tour
 
+            //Pour changer de stratégie
             switch(moveType)
             {
                 case 1 :
@@ -115,7 +111,7 @@ public class Warehouse : MonoBehaviour
             }
         }
       }
-      else{
+      else{ //Quand tout les packages on été déposé
         print("fin experience");
         panelExperience.SetActive(false);
         panelEnd.SetActive(true);
@@ -131,7 +127,7 @@ public class Warehouse : MonoBehaviour
               bool hasPickedUp = false;
               bool deposePackage = false;
               Agent swap = null;
-              if (a.positionTarget == a.transform.position){
+              if (a.positionTarget == a.transform.position){ //Si l'agent n'as rien à faire on essaie de lui affecté un package
                 print("affectation");
                 affectPackage(a);
               }
@@ -141,33 +137,37 @@ public class Warehouse : MonoBehaviour
               }
               else // Si il a quelque chose dans les mains
               {
-                  deposePackage = resolveDestination(a);
-                  if (!deposePackage) {
-                    swap = resolveSwap(a);
+                  deposePackage = resolveDestination(a); //On essaie de voir si il peut déposer le package a la destination
+                  if (!deposePackage) { //Si il ne peut pas déposer le package (pas à côté de la destination)
+                    swap = resolveSwap(a); //On vois si il y a quelqu'un de disponible pour prendre le colis (quelqu'un qui n'as rien a faire)
                   }
               }
 
               if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
               {
-                  if (a.positionTarget != a.transform.position) {
-                    resolvePos(a);
-                    a.computeMoveToTarget();
-                    if (swap != null) {
+                  if (a.positionTarget != a.transform.position) { //Si l'agent doit faire quelque chose (bouger ou faire une tâche)
+                    resolvePos(a); //L'agent regarde où est-ce qu'il peut éventuellement aller
+                    a.computeMoveToTarget(); //On calcule ensuite la meilleure position pour aller a l'objectif
+                    if (swap != null) { //Si l'agent peux swap
+                    //On vérifie également si c'est intéressant de faire un swap ou pas (en fonction de la distance à la destination)
                       if (Vector3.Distance(destinations[0].transform.position,a.nextPos)>Vector3.Distance(destinations[0].transform.position,swap.transform.position)) {
                         a.changeForNormalSprite();
+
                         swap.changeForCarrySprite();
                         swap.packageInHands = a.packageInHands;
+
                         a.packageInHands = null;
                         swap.positionTarget = destinations[0].transform.position;
                         a.nextPos = a.transform.position;
+
                         affectPackage(a);
                         print("echange");
                       }
-                      else{
+                      else{ //Si c'est pas intéressant on bouge
                         a.move();
                       }
                     }
-                    else{
+                    else{ //Si l'agent ne peux pas faire de swap
                       a.move();
                     }
                   }
@@ -232,7 +232,7 @@ public class Warehouse : MonoBehaviour
             }
         }
     }
-    bool resolveDestination(Agent a)
+    bool resolveDestination(Agent a) //On regarde si la destination est une case à côté
     {
         if (someoneIsThere(a.transform.position + north)==3 || someoneIsThere(a.transform.position + south)==3
         || someoneIsThere(a.transform.position + west)==3 || someoneIsThere(a.transform.position + east)==3)
@@ -241,7 +241,7 @@ public class Warehouse : MonoBehaviour
         }
         return false;
     }
-    void resolvePos(Agent a)
+    void resolvePos(Agent a) //On regarde les positions possibles
     {
         a.possiblePos.Clear();
         if (someoneIsThere(a.transform.position + north)==0){
@@ -261,7 +261,7 @@ public class Warehouse : MonoBehaviour
         }
     }
 
-    bool resolvePickupRandom(Agent a)
+    bool resolvePickupRandom(Agent a) //On regarde les position possible (dans la méthode de déplacement Random)
     {
         a.possiblePos.Clear();
         int indexP = -1;
@@ -291,7 +291,7 @@ public class Warehouse : MonoBehaviour
         }
         else { return false; }
     }
-    bool resolvePickup(Agent a)
+    bool resolvePickup(Agent a) //Pour le cas où les packages sont attribués
     {
         a.possiblePos.Clear();
         int indexP = -1;
@@ -313,7 +313,7 @@ public class Warehouse : MonoBehaviour
         }
         if (indexP != -1)
         {
-          if (a.positionTarget == packages[indexP].transform.position) {
+          if (a.positionTarget == packages[indexP].transform.position) { //On vérifie que le package que l'agent essaie de prendre est le sien
             a.changeForCarrySprite();
             a.packageInHands = packages[indexP];
             packages[indexP].gameObject.SetActive(false);
@@ -324,7 +324,8 @@ public class Warehouse : MonoBehaviour
         }
         else { return false; }
     }
-    Agent resolveSwap(Agent a)
+    Agent resolveSwap(Agent a) //On regarde si il est possible de swap (on vérifie si il y a un ou plusieurs agents proche, dans le cas où il y en a plusieurs
+    // on prend celui le plus proche de la destination). Renvoe null si swap pas dispo
     {
         a.possiblePos.Clear();
         Agent agentcible = null;
@@ -371,7 +372,7 @@ public class Warehouse : MonoBehaviour
         return agentcible;
     }
 
-    int findPackage(Vector3 pos)
+    int findPackage(Vector3 pos) //Méthode pour retrouver l'index (dans la liste packages) d'un package à partir de sa position
     {
         for(int i = 0; i < packages.Count; i++)
         {
@@ -383,7 +384,7 @@ public class Warehouse : MonoBehaviour
         return -1;
     }
 
-    Agent findAgent(Vector3 pos)
+    Agent findAgent(Vector3 pos) //Méthode pour retrouver un agent dans la liste agents à partir de sa position
     {
         for(int i = 0; i < agents.Count; i++)
         {
@@ -395,7 +396,8 @@ public class Warehouse : MonoBehaviour
         return null;
     }
 
-    int someoneIsThere(Vector3 pos)
+    int someoneIsThere(Vector3 pos) //Méthode pour vérifier ce qu'il y a à une position donnée. 
+    // Renvoie 1 si il y a un agent, 2 si il y a un package, 3 si il y a la destination et 4 si il y a un agent qui n'as rien à faire
     {
         foreach(Agent a in agents)
         {
@@ -431,7 +433,7 @@ public class Warehouse : MonoBehaviour
 
         return 0;
     }
-    public void affectPackage(Agent a){
+    public void affectPackage(Agent a){ //Affecter package
       int index;
       bool done = true;
       for (int i = 0; i<packages.Count; i++) {
