@@ -295,34 +295,44 @@ public class Warehouse : MonoBehaviour
     {
         a.possiblePos.Clear();
         int indexP = -1;
+        List<int> indexPs = new List<int>();
         if (someoneIsThere(a.transform.position + north) == 2)
         {
             indexP = findPackage(a.transform.position + north);
+            indexPs.Add(indexP);
         }
-        else if (someoneIsThere(a.transform.position + south) == 2)
+        if (someoneIsThere(a.transform.position + south) == 2)
         {
             indexP = findPackage(a.transform.position + south);
+            indexPs.Add(indexP);
         }
-        else if (someoneIsThere(a.transform.position + west) == 2)
+        if (someoneIsThere(a.transform.position + west) == 2)
         {
             indexP = findPackage(a.transform.position + west);
+            indexPs.Add(indexP);
         }
-        else if (someoneIsThere(a.transform.position + east) == 2)
+        if (someoneIsThere(a.transform.position + east) == 2)
         {
             indexP = findPackage(a.transform.position + east);
+            indexPs.Add(indexP);
         }
-        if (indexP != -1)
+
+        if (indexPs.Count > 0)
         {
-          if (a.positionTarget == packages[indexP].transform.position) { //On vérifie que le package que l'agent essaie de prendre est le sien
-            a.changeForCarrySprite();
-            a.packageInHands = packages[indexP];
-            packages[indexP].gameObject.SetActive(false);
-            packages.RemoveAt(indexP);
-            return true;
-          }
-          else { return false; }
+            foreach(int i in indexPs)
+            {
+                if (a.positionTarget == packages[i].transform.position) 
+                { //On vérifie que le package que l'agent essaie de prendre est le sien
+                    a.changeForCarrySprite();
+                    a.packageInHands = packages[i];
+                    packages[i].gameObject.SetActive(false);
+                    packages.RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
         }
-        else { return false; }
+        return false;
     }
     Agent resolveSwap(Agent a) //On regarde si il est possible de swap (on vérifie si il y a un ou plusieurs agents proche, dans le cas où il y en a plusieurs
     // on prend celui le plus proche de la destination). Renvoe null si swap pas dispo
