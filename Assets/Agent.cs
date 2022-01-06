@@ -84,12 +84,12 @@ public class Agent : MonoBehaviour
         transform.position = nextPos;
     }
 
-    void ChangeForCarrySprite()
+    public void changeForCarrySprite()
     {
         spriteRenderer.sprite = carrySprite; 
     }
 
-    void ChangeForNormalSprite()
+    public void changeForNormalSprite()
     {
         spriteRenderer.sprite = normalSprite;
     }

@@ -139,6 +139,7 @@ public class Warehouse : MonoBehaviour
         }
         if (indexP != -1)
         {
+            a.changeForCarrySprite();
             a.packageInHands = packages[indexP];
             packages[indexP].gameObject.SetActive(false);
             packages.RemoveAt(indexP);
