@@ -14,6 +14,7 @@ public class Agent : MonoBehaviour
     SpriteRenderer spriteRenderer;
 
     public Package packageInHands;
+    public Vector3 positionTarget;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,7 @@ public class Agent : MonoBehaviour
         normalSprite = spriteRenderer.sprite;
 
         packageInHands = null;
+        positionTarget = transform.position;
 
     }
 
@@ -39,7 +41,7 @@ public class Agent : MonoBehaviour
         this.heightWarehouse = h;
     }
 
-    public void computeMove()
+    public void computeMoveRandom()
     {
         switch (Random.Range(0, possiblePos.Count))
         {
@@ -61,6 +63,48 @@ public class Agent : MonoBehaviour
                 break;
         }
     }
+    public void computeMoveToTarget()
+    {
+        bool lockVerticale =false;
+
+        float posVerticale = transform.position.y;
+        float posHorizontale = transform.position.x;
+
+        float destinatioVerticale = positionTarget.y;
+        float destinatioHorizontale = positionTarget.x;
+
+        if (posVerticale<destinatioVerticale) {
+            nextPos = nextPos + Warehouse.north;
+            if (!possiblePos.Contains(nextPos)) {
+              nextPos = transform.position;
+              lockVerticale = true;
+            }
+        }
+        else if (posVerticale>destinatioVerticale) {
+            nextPos = nextPos +  Warehouse.south;
+            if (!possiblePos.Contains(nextPos)) {
+              nextPos = transform.position;
+              lockVerticale = true;
+            }
+        }
+        else{
+          lockVerticale = true;
+        }
+        if (lockVerticale) {//si on a pas choisi de mouvement en vertical on en choisis un en horizontal
+          if (posHorizontale<destinatioHorizontale) {
+              nextPos = nextPos +  Warehouse.east;
+              if (!possiblePos.Contains(nextPos)) {
+                nextPos = transform.position;
+              }
+          }
+          else if (posHorizontale>destinatioHorizontale) {
+            nextPos = nextPos +  Warehouse.west;
+            if (!possiblePos.Contains(nextPos)) {
+              nextPos = transform.position;
+            }
+          }
+        }
+    }
 
     public void move()
     {
@@ -69,7 +113,7 @@ public class Agent : MonoBehaviour
 
     public void changeForCarrySprite()
     {
-        spriteRenderer.sprite = carrySprite; 
+        spriteRenderer.sprite = carrySprite;
     }
 
     public void changeForNormalSprite()
