@@ -105,6 +105,12 @@ public class Warehouse : MonoBehaviour
                 case 2 :
                     moveAffectationRandom();
                     break;
+                case 3 :
+                    moveAffectationFar();
+                    break;
+                case 4 :
+                    moveAffectationClose();
+                    break;
                 default:
                     print ("Incorrect move");
                     break;
@@ -129,7 +135,7 @@ public class Warehouse : MonoBehaviour
               Agent swap = null;
               if (a.positionTarget == a.transform.position){ //Si l'agent n'as rien à faire on essaie de lui affecté un package
                 print("affectation");
-                affectPackage(a);
+                affectPackageRandom(a);
               }
               if (a.packageInHands == null) //Si l'agent n'a rien dans les mains
               {
@@ -160,7 +166,7 @@ public class Warehouse : MonoBehaviour
                         swap.positionTarget = destinations[0].transform.position;
                         a.nextPos = a.transform.position;
 
-                        affectPackage(a);
+                        affectPackageRandom(a);
                         print("echange");
                       }
                       else{ //Si c'est pas intéressant on bouge
@@ -178,7 +184,157 @@ public class Warehouse : MonoBehaviour
                   {
                       a.changeForNormalSprite();
                       a.packageInHands = null;
-                      affectPackage(a);
+                      affectPackageRandom(a);
+                      packageInDestination++;
+                      print("depose");
+                  }
+
+                  if(hasPickedUp)
+                  {
+                      print("pick");
+                      a.positionTarget = destinations[0].transform.position;
+                  }
+              }
+
+          }
+      }
+    }
+    void moveAffectationFar()
+    {
+      foreach(Agent a in agents)
+      {
+          if(time == 0)
+          {
+              bool hasPickedUp = false;
+              bool deposePackage = false;
+              Agent swap = null;
+              if (a.positionTarget == a.transform.position){ //Si l'agent n'as rien à faire on essaie de lui affecté un package
+                print("affectation");
+                affectPackageFar(a);
+              }
+              if (a.packageInHands == null) //Si l'agent n'a rien dans les mains
+              {
+                  hasPickedUp = resolvePickup(a);
+              }
+              else // Si il a quelque chose dans les mains
+              {
+                  deposePackage = resolveDestination(a); //On essaie de voir si il peut déposer le package a la destination
+                  if (!deposePackage) { //Si il ne peut pas déposer le package (pas à côté de la destination)
+                    swap = resolveSwap(a); //On vois si il y a quelqu'un de disponible pour prendre le colis (quelqu'un qui n'as rien a faire)
+                  }
+              }
+
+              if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
+              {
+                  if (a.positionTarget != a.transform.position) { //Si l'agent doit faire quelque chose (bouger ou faire une tâche)
+                    resolvePos(a); //L'agent regarde où est-ce qu'il peut éventuellement aller
+                    a.computeMoveToTarget(); //On calcule ensuite la meilleure position pour aller a l'objectif
+                    if (swap != null) { //Si l'agent peux swap
+                    //On vérifie également si c'est intéressant de faire un swap ou pas (en fonction de la distance à la destination)
+                      if (Vector3.Distance(destinations[0].transform.position,a.nextPos)>Vector3.Distance(destinations[0].transform.position,swap.transform.position)) {
+                        a.changeForNormalSprite();
+
+                        swap.changeForCarrySprite();
+                        swap.packageInHands = a.packageInHands;
+
+                        a.packageInHands = null;
+                        swap.positionTarget = destinations[0].transform.position;
+                        a.nextPos = a.transform.position;
+
+                        affectPackageFar(a);
+                        print("echange");
+                      }
+                      else{ //Si c'est pas intéressant on bouge
+                        a.move();
+                      }
+                    }
+                    else{ //Si l'agent ne peux pas faire de swap
+                      a.move();
+                    }
+                  }
+              }
+              else //Si il est entrain de déposer ou pick up
+              {
+                  if(deposePackage) //Si il est entrain de déposer (il a la destination à côté de lui)
+                  {
+                      a.changeForNormalSprite();
+                      a.packageInHands = null;
+                      affectPackageFar(a);
+                      packageInDestination++;
+                      print("depose");
+                  }
+
+                  if(hasPickedUp)
+                  {
+                      print("pick");
+                      a.positionTarget = destinations[0].transform.position;
+                  }
+              }
+
+          }
+      }
+    }
+    void moveAffectationClose()
+    {
+      foreach(Agent a in agents)
+      {
+          if(time == 0)
+          {
+              bool hasPickedUp = false;
+              bool deposePackage = false;
+              Agent swap = null;
+              if (a.positionTarget == a.transform.position){ //Si l'agent n'as rien à faire on essaie de lui affecté un package
+                print("affectation");
+                affectPackageClose(a);
+              }
+              if (a.packageInHands == null) //Si l'agent n'a rien dans les mains
+              {
+                  hasPickedUp = resolvePickup(a);
+              }
+              else // Si il a quelque chose dans les mains
+              {
+                  deposePackage = resolveDestination(a); //On essaie de voir si il peut déposer le package a la destination
+                  if (!deposePackage) { //Si il ne peut pas déposer le package (pas à côté de la destination)
+                    swap = resolveSwap(a); //On vois si il y a quelqu'un de disponible pour prendre le colis (quelqu'un qui n'as rien a faire)
+                  }
+              }
+
+              if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
+              {
+                  if (a.positionTarget != a.transform.position) { //Si l'agent doit faire quelque chose (bouger ou faire une tâche)
+                    resolvePos(a); //L'agent regarde où est-ce qu'il peut éventuellement aller
+                    a.computeMoveToTarget(); //On calcule ensuite la meilleure position pour aller a l'objectif
+                    if (swap != null) { //Si l'agent peux swap
+                    //On vérifie également si c'est intéressant de faire un swap ou pas (en fonction de la distance à la destination)
+                      if (Vector3.Distance(destinations[0].transform.position,a.nextPos)>Vector3.Distance(destinations[0].transform.position,swap.transform.position)) {
+                        a.changeForNormalSprite();
+
+                        swap.changeForCarrySprite();
+                        swap.packageInHands = a.packageInHands;
+
+                        a.packageInHands = null;
+                        swap.positionTarget = destinations[0].transform.position;
+                        a.nextPos = a.transform.position;
+
+                        affectPackageClose(a);
+                        print("echange");
+                      }
+                      else{ //Si c'est pas intéressant on bouge
+                        a.move();
+                      }
+                    }
+                    else{ //Si l'agent ne peux pas faire de swap
+                      a.move();
+                    }
+                  }
+              }
+              else //Si il est entrain de déposer ou pick up
+              {
+                  if(deposePackage) //Si il est entrain de déposer (il a la destination à côté de lui)
+                  {
+                      a.changeForNormalSprite();
+                      a.packageInHands = null;
+                      affectPackageClose(a);
                       packageInDestination++;
                       print("depose");
                   }
@@ -321,7 +477,7 @@ public class Warehouse : MonoBehaviour
         {
             foreach(int i in indexPs)
             {
-                if (a.positionTarget == packages[i].transform.position) 
+                if (a.positionTarget == packages[i].transform.position)
                 { //On vérifie que le package que l'agent essaie de prendre est le sien
                     a.changeForCarrySprite();
                     a.packageInHands = packages[i];
@@ -406,7 +562,7 @@ public class Warehouse : MonoBehaviour
         return null;
     }
 
-    int someoneIsThere(Vector3 pos) //Méthode pour vérifier ce qu'il y a à une position donnée. 
+    int someoneIsThere(Vector3 pos) //Méthode pour vérifier ce qu'il y a à une position donnée.
     // Renvoie 1 si il y a un agent, 2 si il y a un package, 3 si il y a la destination et 4 si il y a un agent qui n'as rien à faire
     {
         foreach(Agent a in agents)
@@ -443,7 +599,7 @@ public class Warehouse : MonoBehaviour
 
         return 0;
     }
-    public void affectPackage(Agent a){ //Affecter package
+    public void affectPackageRandom(Agent a){ //Affecter package
       int index;
       bool done = true;
       for (int i = 0; i<packages.Count; i++) {
@@ -457,6 +613,62 @@ public class Warehouse : MonoBehaviour
             index = Random.Range(0, packages.Count);
         } while (packages[index].affected);
 
+        a.positionTarget = packages[index].transform.position;
+        packages[index].affected = true;
+        packagesAffected = packagesAffected+1;
+      }
+      else{
+        print("plus de paquets");
+        a.positionTarget = a.transform.position;
+      }
+    }
+    public void affectPackageClose(Agent a){ //Affecter package
+      int index = 0;
+      bool done = true;
+      for (int i = 0; i<packages.Count; i++) {
+        if (!packages[i].affected) {
+          done = false;
+        }
+      }
+      if (!done) {
+        float distMin = 9999;
+        for (int i = 0; i<packages.Count; i++) {
+          if (!packages[i].affected) {
+            float distance = Vector3.Distance(packages[i].transform.position,a.transform.position);
+            if (distance<distMin) {
+              distMin = distance;
+              index = i;
+            }
+          }
+        }
+        a.positionTarget = packages[index].transform.position;
+        packages[index].affected = true;
+        packagesAffected = packagesAffected+1;
+      }
+      else{
+        print("plus de paquets");
+        a.positionTarget = a.transform.position;
+      }
+    }
+    public void affectPackageFar(Agent a){ //Affecter package
+      int index = 0;
+      bool done = true;
+      for (int i = 0; i<packages.Count; i++) {
+        if (!packages[i].affected) {
+          done = false;
+        }
+      }
+      if (!done) {
+        float distMax = 0;
+        for (int i = 0; i<packages.Count; i++) {
+          if (!packages[i].affected) {
+            float distance = Vector3.Distance(packages[i].transform.position,a.transform.position);
+            if (distance>distMax) {
+              distMax = distance;
+              index = i;
+            }
+          }
+        }
         a.positionTarget = packages[index].transform.position;
         packages[index].affected = true;
         packagesAffected = packagesAffected+1;
