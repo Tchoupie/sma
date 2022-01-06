@@ -50,6 +50,7 @@ public class Warehouse : MonoBehaviour
         for(int i=0; i<nbAgents;i++)
         {
             Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
+            print(someoneIsThere(posSpawn));
             while(someoneIsThere(posSpawn) != 0)
             {
                 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
@@ -62,6 +63,7 @@ public class Warehouse : MonoBehaviour
         for(int i=0; i < nbPackages; i++)
         {
             Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
+            print(someoneIsThere(posSpawn));
             while(someoneIsThere(posSpawn) != 0)
             {
                 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
@@ -73,6 +75,7 @@ public class Warehouse : MonoBehaviour
         for (int i = 0; i < nbDestinations; i++)
         {
             Vector3 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
+            print(someoneIsThere(posSpawn));
             while(someoneIsThere(posSpawn) != 0)
             {
                 posSpawn = new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0);
@@ -265,7 +268,7 @@ public class Warehouse : MonoBehaviour
             a.changeForCarrySprite();
             a.packageInHands = packages[indexP];
             packages[indexP].gameObject.SetActive(false);
-            //packages.RemoveAt(indexP);
+            packages.RemoveAt(indexP);
             return true;
         }
         else { return false; }
@@ -296,7 +299,7 @@ public class Warehouse : MonoBehaviour
             a.changeForCarrySprite();
             a.packageInHands = packages[indexP];
             packages[indexP].gameObject.SetActive(false);
-            //packages.RemoveAt(indexP);
+            packages.RemoveAt(indexP);
             return true;
           }
           else { return false; }
