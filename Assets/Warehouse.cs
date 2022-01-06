@@ -164,7 +164,7 @@ public class Warehouse : MonoBehaviour
             bool deposePackage = false;
             if (a.packageInHands == null) //Si l'agent n'a rien dans les mains
             {
-                hasPickedUp = resolvePickup(a);
+                hasPickedUp = resolvePickupRandom(a);
             }
             else // Si il a quelque chose dans les mains
             {
@@ -224,7 +224,7 @@ public class Warehouse : MonoBehaviour
         }
     }
 
-    bool resolvePickup(Agent a)
+    bool resolvePickupRandom(Agent a)
     {
         a.possiblePos.Clear();
         int indexP = -1;
@@ -249,8 +249,41 @@ public class Warehouse : MonoBehaviour
             a.changeForCarrySprite();
             a.packageInHands = packages[indexP];
             packages[indexP].gameObject.SetActive(false);
-            packages.RemoveAt(indexP);
+            //packages.RemoveAt(indexP);
             return true;
+        }
+        else { return false; }
+    }
+    bool resolvePickup(Agent a)
+    {
+        a.possiblePos.Clear();
+        int indexP = -1;
+        if (someoneIsThere(a.transform.position + north) == 2)
+        {
+            indexP = findPackage(a.transform.position + north);
+        }
+        else if (someoneIsThere(a.transform.position + south) == 2)
+        {
+            indexP = findPackage(a.transform.position + south);
+        }
+        else if (someoneIsThere(a.transform.position + west) == 2)
+        {
+            indexP = findPackage(a.transform.position + west);
+        }
+        else if (someoneIsThere(a.transform.position + east) == 2)
+        {
+            indexP = findPackage(a.transform.position + east);
+        }
+        if (indexP != -1)
+        {
+          if (a.positionTarget == packages[indexP].transform.position) {
+            a.changeForCarrySprite();
+            a.packageInHands = packages[indexP];
+            packages[indexP].gameObject.SetActive(false);
+            //packages.RemoveAt(indexP);
+            return true;
+          }
+          else { return false; }
         }
         else { return false; }
     }
@@ -302,12 +335,20 @@ public class Warehouse : MonoBehaviour
     }
     public void affectPackage(Agent a){
       int index;
-      if (packagesAffected<=packages.Count) {
+      bool done = true;
+      for (int i = 0; i<packages.Count; i++) {
+        if (!packages[i].affected) {
+          done = false;
+        }
+      }
+      if (!done) {
         do {
+            print("check");
             index = Random.Range(0, packages.Count);
         } while (packages[index].affected);
 
         a.positionTarget = packages[index].transform.position;
+        packages[index].affected = true;
         packagesAffected = packagesAffected+1;
       }
       else{
