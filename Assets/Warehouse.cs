@@ -116,6 +116,7 @@ public class Warehouse : MonoBehaviour
           {
               bool hasPickedUp = false;
               bool deposePackage = false;
+              bool swap = false;
               if (a.positionTarget == a.transform.position){
                 print("affectation");
                 affectPackage(a);
@@ -127,13 +128,18 @@ public class Warehouse : MonoBehaviour
               else // Si il a quelque chose dans les mains
               {
                   deposePackage = resolveDestination(a);
+                  if (!deposePackage) {
+                    swap = resolveSwap(a);
+                  }
               }
 
-              if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
+              if(!hasPickedUp && !deposePackage && !swap) //Si il n'est pas entrain de pick up ou de déposé
               {
-                  resolvePos(a);
-                  a.computeMoveToTarget();
-                  a.move();
+                  if (a.positionTarget != a.transform.position) {
+                    resolvePos(a);
+                    a.computeMoveToTarget();
+                    a.move();
+                  }
               }
               else //Si il est entrain de déposer ou pick up
               {
@@ -287,6 +293,63 @@ public class Warehouse : MonoBehaviour
         }
         else { return false; }
     }
+    bool resolveSwap(Agent a)
+    {
+        a.possiblePos.Clear();
+        Agent agentcible = null;
+        if (someoneIsThere(a.transform.position + north) == 4)
+        {
+            agentcible = findAgent(a.transform.position + north);
+        }
+        if (someoneIsThere(a.transform.position + south) == 4)
+        {
+            if (agentcible == null) {
+              agentcible = findAgent(a.transform.position + south);
+            }
+            else{
+              Agent temp = findAgent(a.transform.position + south);
+              if (Vector3.Distance(destinations[0].transform.position,temp.transform.position)<Vector3.Distance(destinations[0].transform.position,agentcible.transform.position)) {
+                agentcible = temp;
+              }
+            }
+        }
+        if (someoneIsThere(a.transform.position + west) == 4)
+        {
+            if (agentcible == null) {
+              agentcible = findAgent(a.transform.position + west);
+            }
+            else{
+              Agent temp = findAgent(a.transform.position + west);
+              if (Vector3.Distance(destinations[0].transform.position,temp.transform.position)<Vector3.Distance(destinations[0].transform.position,agentcible.transform.position)) {
+                agentcible = temp;
+              }
+            }
+        }
+        else if (someoneIsThere(a.transform.position + east) == 4)
+        {
+          if (agentcible == null) {
+            agentcible = findAgent(a.transform.position + east);
+          }
+          else{
+            Agent temp = findAgent(a.transform.position + east);
+            if (Vector3.Distance(destinations[0].transform.position,temp.transform.position)<Vector3.Distance(destinations[0].transform.position,agentcible.transform.position)) {
+              agentcible = temp;
+            }
+          }
+        }
+        if (agentcible != null)
+        {
+          a.changeForNormalSprite();
+          agentcible.changeForCarrySprite();
+          agentcible.packageInHands = a.packageInHands;
+          a.packageInHands = null;
+          agentcible.positionTarget = destinations[0].transform.position;
+          affectPackage(a);
+          print("echange");
+          return true;
+        }
+        else { return false; }
+    }
 
     int findPackage(Vector3 pos)
     {
@@ -300,12 +363,27 @@ public class Warehouse : MonoBehaviour
         return -1;
     }
 
+    Agent findAgent(Vector3 pos)
+    {
+        for(int i = 0; i < agents.Count; i++)
+        {
+            if (agents[i].transform.position == pos)
+            {
+                return agents[i];
+            }
+        }
+        return null;
+    }
+
     int someoneIsThere(Vector3 pos)
     {
         foreach(Agent a in agents)
         {
             if(a.nextPos == pos)
             {
+                if (a.positionTarget == a.transform.position) {
+                    return 4;
+                }
                 return 1;
             }
         }
