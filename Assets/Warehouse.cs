@@ -306,7 +306,7 @@ public class Warehouse : MonoBehaviour
                     a.computeMoveToTarget(); //On calcule ensuite la meilleure position pour aller a l'objectif
                     if (swap != null) { //Si l'agent peux swap
                     //On vérifie également si c'est intéressant de faire un swap ou pas (en fonction de la distance à la destination)
-                      if (Vector3.Distance(destinations[0].transform.position,a.nextPos)>Vector3.Distance(destinations[0].transform.position,swap.transform.position)) {
+                      if (Vector3.Distance(destinations[0].transform.position,a.nextPos)>=Vector3.Distance(destinations[0].transform.position,swap.transform.position)) {
                         a.changeForNormalSprite();
 
                         swap.changeForCarrySprite();
