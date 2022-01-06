@@ -72,45 +72,20 @@ public class Agent : MonoBehaviour
     }
     public void computeMoveToTarget()
     {
-        bool lockVerticale =false;
-
-        float posVerticale = transform.position.y;
-        float posHorizontale = transform.position.x;
-
-        float destinatioVerticale = positionTarget.y;
-        float destinatioHorizontale = positionTarget.x;
-
-        if (posVerticale<destinatioVerticale) {
-            nextPos = nextPos + Warehouse.north;
-            if (!possiblePos.Contains(nextPos)) {
-              nextPos = transform.position;
-              lockVerticale = true;
-            }
-        }
-        else if (posVerticale>destinatioVerticale) {
-            nextPos = nextPos +  Warehouse.south;
-            if (!possiblePos.Contains(nextPos)) {
-              nextPos = transform.position;
-              lockVerticale = true;
-            }
+      if (possiblePos.Count>0) {
+        if (possiblePos.Count == 1) {
+          nextPos = possiblePos[0];
         }
         else{
-          lockVerticale = true;
-        }
-        if (lockVerticale) {//si on a pas choisi de mouvement en vertical on en choisis un en horizontal
-          if (posHorizontale<destinatioHorizontale) {
-              nextPos = nextPos +  Warehouse.east;
-              if (!possiblePos.Contains(nextPos)) {
-                nextPos = transform.position;
-              }
-          }
-          else if (posHorizontale>destinatioHorizontale) {
-            nextPos = nextPos +  Warehouse.west;
-            if (!possiblePos.Contains(nextPos)) {
-              nextPos = transform.position;
+          Vector3 bestMove = possiblePos[0];
+          for (int i = 1; i<possiblePos.Count; i++) {
+            if (Vector3.Distance(positionTarget,bestMove)>Vector3.Distance(positionTarget,possiblePos[i])) {
+              bestMove = possiblePos[i];
             }
           }
+          nextPos = bestMove;
         }
+      }
     }
 
     public void move()
