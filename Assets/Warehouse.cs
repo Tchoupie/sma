@@ -33,6 +33,8 @@ public class Warehouse : MonoBehaviour
         agents = new List<Agent>();
         packages = new List<Package>();
         destinations = new List<Destination>();
+        nbAgents = VariablesGlobales.nbAgentsGlob;
+        nbPackages = VariablesGlobales.nbPaquetsGlob;
         for(int i=0; i<nbAgents;i++)
         {
             GameObject a = Instantiate(agentPrefab,new Vector3(Random.Range((int)-width/2,(int)(width/2)+1),Random.Range((int)-height/2,(int)(height/2)+1),0),Quaternion.identity);
