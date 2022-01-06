@@ -25,6 +25,9 @@ public class Warehouse : MonoBehaviour
     public float dt = 0f;
     public Slider sliderSpeed;
     public GameObject turnText;
+    public GameObject TextEnd;
+    public GameObject panelExperience;
+    public GameObject panelEnd;
     int turn = 0;
     float prevdt = 0f;
     int packageInDestination = 0;
@@ -84,6 +87,7 @@ public class Warehouse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+      if (nbDestinations != nbPackages) {
         dt = sliderSpeed.value;
 
         time += dt;
@@ -107,6 +111,12 @@ public class Warehouse : MonoBehaviour
                     break;
             }
         }
+      }
+      else{
+        panelExperience.SetActive(false);
+        panelEnd.SetActive(true);
+        TextEnd.GetComponent<UnityEngine.UI.Text>().text = "Mission accomplie en "+ turn.ToString() + " tours";
+      }
     }
     void moveClosestAffectationRandom()
     {
@@ -435,6 +445,7 @@ public class Warehouse : MonoBehaviour
       }
     }
     public void ReturnToMainMenu(){
+      VariablesGlobales.reset();
       SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 }
