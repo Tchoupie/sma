@@ -12,6 +12,7 @@ public class Warehouse : MonoBehaviour
     public int nbAgents;
     public int nbPackages;
     public int nbDestinations;
+    public int packagesAffected = 0;
 
     public int moveType;
     public List<Agent> agents;
@@ -29,10 +30,10 @@ public class Warehouse : MonoBehaviour
     int packageInDestination = 0;
     // Start is called before the first frame update
 
-    private static Vector3Int north = new Vector3Int(0, 1, 0);
-    private static Vector3Int south = new Vector3Int(0, -1, 0);
-    private static Vector3Int west = new Vector3Int(-1, 0, 0);
-    private static Vector3Int east = new Vector3Int(1, 0, 0);
+    public static Vector3Int north = new Vector3Int(0, 1, 0);
+    public static Vector3Int south = new Vector3Int(0, -1, 0);
+    public static Vector3Int west = new Vector3Int(-1, 0, 0);
+    public static Vector3Int east = new Vector3Int(1, 0, 0);
 
     void Start()
     {
@@ -94,16 +95,65 @@ public class Warehouse : MonoBehaviour
         }
         switch(moveType)
         {
-            case 1 : 
+            case 1 :
                 randomMove();
                 break;
-
+            case 2 :
+                moveClosestAffectationRandom();
+                break;
             default:
                 print ("Incorrect move");
                 break;
         }
     }
+    void moveClosestAffectationRandom()
+    {
+      foreach(Agent a in agents)
+      {
+          if(time == 0)
+          {
+              bool hasPickedUp = false;
+              bool deposePackage = false;
+              if (a.positionTarget == a.transform.position){
+                print("affectation");
+                affectPackage(a);
+              }
+              if (a.packageInHands == null) //Si l'agent n'a rien dans les mains
+              {
+                  hasPickedUp = resolvePickup(a);
+              }
+              else // Si il a quelque chose dans les mains
+              {
+                  deposePackage = resolveDestination(a);
+              }
 
+              if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
+              {
+                  resolvePos(a);
+                  a.computeMoveToTarget();
+                  a.move();
+              }
+              else //Si il est entrain de déposer ou pick up
+              {
+                  if(deposePackage) //Si il est entrain de déposer (il a la destination à côté de lui)
+                  {
+                      a.changeForNormalSprite();
+                      a.packageInHands = null;
+                      affectPackage(a);
+                      packageInDestination++;
+                      print("depose");
+                  }
+
+                  if(hasPickedUp)
+                  {
+                      print("pick");
+                      a.positionTarget = destinations[0].transform.position;
+                  }
+              }
+
+          }
+      }
+    }
     void randomMove()
     {
         foreach(Agent a in agents)
@@ -124,7 +174,7 @@ public class Warehouse : MonoBehaviour
                 if(!hasPickedUp && !deposePackage) //Si il n'est pas entrain de pick up ou de déposé
                 {
                     resolvePos(a);
-                    a.computeMove();
+                    a.computeMoveRandom();
                     a.move();
                 }
                 else //Si il est entrain de déposer ou pick up
@@ -148,7 +198,7 @@ public class Warehouse : MonoBehaviour
     }
     bool resolveDestination(Agent a)
     {
-        if (someoneIsThere(a.transform.position + north)==3 || someoneIsThere(a.transform.position + south)==3 
+        if (someoneIsThere(a.transform.position + north)==3 || someoneIsThere(a.transform.position + south)==3
         || someoneIsThere(a.transform.position + west)==3 || someoneIsThere(a.transform.position + east)==3)
         {
             return true;
@@ -250,6 +300,21 @@ public class Warehouse : MonoBehaviour
         }
 
         return 0;
+    }
+    public void affectPackage(Agent a){
+      int index;
+      if (packagesAffected<=packages.Count) {
+        do {
+            index = Random.Range(0, packages.Count);
+        } while (packages[index].affected);
+
+        a.positionTarget = packages[index].transform.position;
+        packagesAffected = packagesAffected+1;
+      }
+      else{
+        print("plus de paquets");
+        a.positionTarget = a.transform.position;
+      }
     }
     public void ReturnToMainMenu(){
       SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
